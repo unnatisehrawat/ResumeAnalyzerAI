@@ -1,0 +1,70 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+ 
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+
+  resumes   Resume[]
+  jobs      JobDescription[]
+}
+
+model Resume {
+  id         String   @id @default(uuid())
+  userId     String
+  fileUrl    String
+  parsedData Json?
+  createdAt  DateTime @default(now())
+
+  user       User     @relation(fields: [userId], references: [id])
+  analyses   Analysis[]
+  interviews Interview[]
+}
+
+model JobDescription {
+  id         String   @id @default(uuid())
+  userId     String
+  content    String
+  parsedData Json?
+  createdAt  DateTime @default(now())
+
+  user       User     @relation(fields: [userId], references: [id])
+  analyses   Analysis[]
+  interviews Interview[]
+}
+
+model Analysis {
+  id               String   @id @default(uuid())
+  resumeId         String
+  jobDescriptionId String
+  matchScore       Int
+  matchedSkills    Json
+  missingSkills    Json
+  projectRelevance Json
+  suggestions      Json
+  createdAt        DateTime @default(now())
+
+  resume           Resume        @relation(fields: [resumeId], references: [id])
+  jobDescription   JobDescription @relation(fields: [jobDescriptionId], references: [id])
+}
+
+model Interview {
+  id               String   @id @default(uuid())
+  resumeId         String
+  jobDescriptionId String
+  questions        Json
+  createdAt        DateTime @default(now())
+
+  resume           Resume         @relation(fields: [resumeId], references: [id])
+  jobDescription   JobDescription @relation(fields: [jobDescriptionId], references: [id])
+}
+
