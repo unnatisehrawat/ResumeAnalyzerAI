@@ -7,7 +7,12 @@ import analysisRoutes from "./src/routes/analysis.routes.js";
 import interviewRoutes from "./src/routes/interview.routes.js";
 const app = express();
 
-app.use(cors());
+app.use(cors({
+  origin: "http://localhost:5173",
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true
+}));
 app.use(express.json());
 app.use("/auth", authRoutes);
 app.use("/resume", resumeRoutes);

@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // URL of the Python Embedding Microservice
-const EMBEDDING_SERVICE_URL = "http://127.0.0.1:5000/embed";
+const EMBEDDING_SERVICE_URL = "http://127.0.0.1:5050/embed";
 
 /**
  * Generate embeddings for a given text by calling the Python Microservice
