@@ -1,12 +1,18 @@
-import { embeddingSkillMatch } from "./skillEmbeddingMatch.service.js";
+import { skillMatch } from "./skillMatching.service.js";
 
-export const calculateFinalMatchScore = async (resumeData, jdData) => {
+export const calculateFinalMatchScore = async (
+  resumeData,
+  jdData
+) => {
   try {
     const resumeSkills = resumeData.skills || [];
     const requiredSkills = jdData.requiredSkills || [];
     const preferredSkills = jdData.preferredSkills || [];
 
-    const allJdSkills = [...requiredSkills, ...preferredSkills];
+    const allJdSkills = [
+      ...requiredSkills,
+      ...preferredSkills
+    ];
 
     // -----------------------------
     // 1️⃣ Rule‑based ATS matching
@@ -26,19 +32,21 @@ export const calculateFinalMatchScore = async (resumeData, jdData) => {
     );
 
     const ruleBasedScore = allJdSkills.length
-      ? Math.round((matchedSkills.length / allJdSkills.length) * 100)
+      ? Math.round(
+        (matchedSkills.length / allJdSkills.length) * 100
+      )
       : 0;
 
     // -----------------------------
-    // 2️⃣ Embedding‑based semantic score
+    // 2️⃣ LLM‑based semantic score (Groq)
     // -----------------------------
-    const semanticScore = await embeddingSkillMatch(
+    const semanticScore = await skillMatch(
       resumeSkills,
       allJdSkills
     );
 
     // -----------------------------
-    // 3️⃣ REQUIRED skill bonus (NEW)
+    // 3️⃣ REQUIRED skill bonus
     // -----------------------------
     const matchedRequiredSkills = requiredSkills.filter(reqSkill =>
       resumeSkills.some(skill =>
@@ -49,8 +57,10 @@ export const calculateFinalMatchScore = async (resumeData, jdData) => {
 
     const requiredSkillBonus = requiredSkills.length
       ? Math.round(
-          (matchedRequiredSkills.length / requiredSkills.length) * 100
-        )
+        (matchedRequiredSkills.length /
+          requiredSkills.length) *
+        100
+      )
       : 0;
 
     // -----------------------------
@@ -70,16 +80,19 @@ export const calculateFinalMatchScore = async (resumeData, jdData) => {
       matchedSkills,
       missingSkills
     };
-
   } catch (error) {
-    console.error("Match score error:", error);
+    console.error(
+      "Final match score error:",
+      error.message
+    );
+
     return {
       finalScore: 0,
       ruleBasedScore: 0,
       semanticScore: 0,
       requiredSkillBonus: 0,
       matchedSkills: [],
-      missingSkills: jdData.requiredSkills || []
+      missingSkills: jdData?.requiredSkills || []
     };
   }
 };

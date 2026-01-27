@@ -4,51 +4,77 @@ import { findRelevantResumeProjects } from "./projectRelevance.service.js";
 /**
  * MASTER Resume Analysis Service
  * Combines:
- * - ATS score
- * - Semantic skill match
- * - Project relevance (resume → JD)
+ * - Rule-based ATS score
+ * - LLM semantic skill match (Groq)
+ * - Project relevance (Groq)
  */
-export const analyzeResume = async (resumeData, jdData) => {
-  // 1️⃣ ATS + Semantic Skill Matching
-  const matchResult = await calculateFinalMatchScore(
-    resumeData,
-    jdData
-  );
+export const analyzeResume = async (
+  resumeData,
+  jdData
+) => {
+  // 1️⃣ ATS + Semantic Skill Matching (Groq)
+  const matchResult =
+    await calculateFinalMatchScore(
+      resumeData,
+      jdData
+    );
 
-  // 2️⃣ Project relevance (EACH resume project vs JD)
-  const relevantProjects = await findRelevantResumeProjects(
-    resumeData.projects || [],
-    jdData
-  );
+  // 2️⃣ Project relevance (Groq)
+  const relevantProjects =
+    await findRelevantResumeProjects(
+      resumeData.projects || [],
+      jdData
+    );
 
   // 3️⃣ Experience Check
-  const jdExpYears = extractMinYears(jdData.experienceLevel || "");
-  const resumeExpYears = resumeData.totalYearsExperience || 0;
-  const isExperienceMatch = resumeExpYears >= jdExpYears;
+  const jdExpYears = extractMinYears(
+    jdData.experienceLevel || ""
+  );
 
-  // 4️⃣ Final structured analysis
+  const resumeExpYears =
+    resumeData.totalYearsExperience || 0;
+
+  const isExperienceMatch =
+    resumeExpYears >= jdExpYears;
+
+  // 4️⃣ Final structured response
   return {
     overallScore: matchResult.finalScore,
+
     breakdown: {
-      ruleBasedScore: matchResult.ruleBasedScore,
-      semanticScore: matchResult.semanticScore
+      ruleBasedScore:
+        matchResult.ruleBasedScore,
+      semanticScore:
+        matchResult.semanticScore,
+      requiredSkillBonus:
+        matchResult.requiredSkillBonus
     },
+
     skills: {
       matched: matchResult.matchedSkills,
       missing: matchResult.missingSkills
     },
+
     experience: {
       required: jdData.experienceLevel,
       found: `${resumeExpYears} years`,
       isMatch: isExperienceMatch
     },
-    projectRelevance: relevantProjects.slice(0, 3), // top 3 projects
-    verdict: getVerdict(matchResult.finalScore)
+
+    projectRelevance: relevantProjects.slice(
+      0,
+      3
+    ), // top 3 projects
+
+    verdict: getVerdict(
+      matchResult.finalScore
+    )
   };
 };
 
 /**
- * Extracts minimum years from experience string (e.g. "3+ years" -> 3)
+ * Extracts minimum years from experience string
+ * e.g. "3+ years" → 3
  */
 const extractMinYears = (expString) => {
   const match = expString.match(/(\d+)/);
@@ -56,7 +82,7 @@ const extractMinYears = (expString) => {
 };
 
 /**
- * Converts numeric score → human readable result
+ * Converts numeric score → human readable verdict
  */
 const getVerdict = (score) => {
   if (score >= 80) return "Strong Fit";

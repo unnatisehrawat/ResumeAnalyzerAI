@@ -68,10 +68,8 @@ export const runAnalysis = async (req, res) => {
         matchScore: matchResult.overallScore,
         matchedSkills: matchResult.skills.matched,
         missingSkills: matchResult.skills.missing,
-        suggestions: {
-          ...jdSuggestions,
-          projectRelevance: matchResult.projectRelevance
-        }
+        projectRelevance: matchResult.projectRelevance,
+        suggestions: jdSuggestions
       }
     });
 
@@ -87,10 +85,7 @@ export const runAnalysis = async (req, res) => {
         projectRelevance: matchResult.projectRelevance,
         verdict: matchResult.verdict,
         experience: matchResult.experience,
-        jdSuggestions: {
-          ...jdSuggestions,
-          projectRelevance: matchResult.projectRelevance
-        }
+        jdSuggestions: jdSuggestions
       }
     });
   } catch (error) {
