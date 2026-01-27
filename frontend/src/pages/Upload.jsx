@@ -83,7 +83,7 @@ const UploadPage = () => {
         <div className="min-h-screen flex flex-col pt-20">
             <Navbar />
 
-            <main className="flex-grow container-custom py-16">
+            <main className="grow container-custom py-16">
                 <div className="text-center mb-12">
                     <h1 className="text-5xl mb-4">Analyze Your Fit</h1>
                     <p className="text-brand-muted max-w-lg mx-auto">
@@ -108,7 +108,7 @@ const UploadPage = () => {
                             <h3 className="text-xl">Upload Resume</h3>
                         </div>
 
-                        <label className="flex-grow border-2 border-dashed border-brand-border rounded-2xl flex flex-col items-center justify-center p-8 cursor-pointer hover:border-brand-sage/50 hover:bg-brand-sage/5 transition-all group">
+                        <label className="grow border-2 border-dashed border-brand-border rounded-2xl flex flex-col items-center justify-center p-8 cursor-pointer hover:border-brand-sage/50 hover:bg-brand-sage/5 transition-all group">
                             <input type="file" className="hidden" accept=".pdf" onChange={handleFileChange} />
                             {resumeFile ? (
                                 <div className="text-center animate-fade-in flex flex-col items-center">
@@ -152,7 +152,7 @@ const UploadPage = () => {
                         </div>
 
                         <textarea
-                            className="flex-grow input-field resize-none h-[220px] p-4 text-sm leading-relaxed"
+                            className="grow input-field resize-none h-55 p-4 text-sm leading-relaxed"
                             placeholder="Paste the job description here..."
                             value={jdText}
                             onChange={(e) => setJdText(e.target.value)}
