@@ -26,6 +26,7 @@ app.get("/", (req, res) => {
 });
 
 // Health check endpoint for Railway
+// Always returns 200 OK to prevent Railway from killing the container during migrations
 app.get("/health", (req, res) => {
   res.status(200).json({
     status: "healthy",

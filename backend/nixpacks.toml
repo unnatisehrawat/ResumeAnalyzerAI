@@ -8,7 +8,10 @@ nixPkgs = ["nodejs", "openssl"]
 cmds = ["npm install"]
 
 [phases.build]
-cmds = ["npx prisma generate", "npx prisma migrate deploy"]
+# Only generate Prisma client during build
+# Migrations CANNOT run here - database not available during build
+cmds = ["npx prisma generate"]
 
 [start]
-cmd = "node server.js"
+# Run migrations at startup, then start server
+cmd = "npx prisma migrate deploy && node server.js"
