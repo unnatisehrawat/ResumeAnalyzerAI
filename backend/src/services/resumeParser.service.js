@@ -14,8 +14,12 @@ const PDFParse = pdfModule.PDFParse;
 export const extractTextFromPDF = async (filePath) => {
   const buffer = fs.readFileSync(filePath);
 
-  // Instantiate PDFParse and extract text
-  const parser = new PDFParse(new Uint8Array(buffer));
+  // Instantiate PDFParse with options to suppress font warnings
+  // This prevents "standardFontDataUrl" warnings in Railway logs
+  const parser = new PDFParse(new Uint8Array(buffer), {
+    disableFontFace: true,
+    useSystemFonts: false
+  });
   const result = await parser.getText();
 
   return result.text;
