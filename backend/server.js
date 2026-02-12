@@ -1,3 +1,12 @@
+// Suppress punycode deprecation warning from dependencies
+process.removeAllListeners('warning');
+process.on('warning', (warning) => {
+  if (warning.name === 'DeprecationWarning' && warning.message.includes('punycode')) {
+    return; // Ignore punycode warnings
+  }
+  console.warn(warning.name, warning.message);
+});
+
 import dotenv from "dotenv";
 dotenv.config();
 
