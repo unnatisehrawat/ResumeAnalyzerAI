@@ -27,7 +27,7 @@ const server = app.listen(PORT, "0.0.0.0", () => {
   }, 2000);
 });
 
-// Graceful shutdown handling for Railway
+// Graceful shutdown handling (works on Render, Railway, and all SIGTERM-compatible platforms)
 process.on('SIGTERM', () => {
   console.log('⚠️  SIGTERM signal received: closing HTTP server gracefully');
   server.close(() => {

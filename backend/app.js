@@ -25,8 +25,8 @@ app.get("/", (req, res) => {
   res.json({ status: "API running" });
 });
 
-// Health check endpoint for Railway
-// Always returns 200 OK to prevent Railway from killing the container during migrations
+// Health check endpoint for deployment platforms (Render, Railway, etc.)
+// Always returns 200 OK to prevent the platform from killing the container during startup
 app.get("/health", (req, res) => {
   res.status(200).json({
     status: "healthy",
